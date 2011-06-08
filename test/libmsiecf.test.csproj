@@ -8,8 +8,8 @@
     <ProjectGuid>{17B470B0-3ED3-42A9-9845-4A29A96EA721}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>libmsiecf.test</RootNamespace>
-    <AssemblyName>libmsiecf.test</AssemblyName>
+    <RootNamespace>test</RootNamespace>
+    <AssemblyName>libmsiecf-sharp-test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
