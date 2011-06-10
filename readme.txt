@@ -45,7 +45,7 @@
 		└───libmsiecf.net
 		
 	*license
-		LGPLv3 http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
+		Eclipse Public License v1.0 [http://www.eclipse.org/legal/epl-v10.html]
 
 	*acknowledgements
 		joachim metz
