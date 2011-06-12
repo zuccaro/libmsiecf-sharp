@@ -10,7 +10,7 @@ namespace libmsiecf
     /// <summary>
     /// Object-oriented wrapper for libmsiecf
     /// </summary>
-    public class IndexDat
+    public class IndexDat  : IDisposable
     {
         internal IndexDatHandle handle;
 
@@ -65,6 +65,7 @@ namespace libmsiecf
         /// </summary>
         ~IndexDat()
         {
+            if (this.handle!=null && !this.handle.IsClosed)
             this.handle.Close();
         }
 
@@ -174,6 +175,15 @@ namespace libmsiecf
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// disposes native handle
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.handle != null && !this.handle.IsClosed)
+                this.handle.Close();
         }
     }
 
