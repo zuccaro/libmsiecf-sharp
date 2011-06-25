@@ -34,15 +34,10 @@
 	Library and tools to access the Microsoft Internet Explorer (MSIE) Cache File (index.dat) files
 	http://sourceforge.net/projects/libmsiecf/
 
-	*install
+	*install & build
 		download libmsiecf (see url above)
 		download this project (duh)
-
-		place the two projects alongside each other such that:
-		
-		(some dir)
-		├───libmsiecf
-		└───libmsiecf.net
+		to use libmsiecf-sharp.dll, you must have libmsiecf.dll in the path, for instance it works well keeping them in the same directory.
 		
 	*license
 		Eclipse Public License v1.0 [http://www.eclipse.org/legal/epl-v10.html]
