@@ -10,9 +10,10 @@ namespace libmsiecf
     /// <summary>
     /// Object-oriented wrapper for libmsiecf
     /// </summary>
-    public class IndexDat  : IDisposable
+    public class IndexDat : IDisposable
     {
         internal IndexDatHandle handle;
+        private string[] cacheDirectories = null;
 
         /// <summary>
         /// Constructor - give it an index.dat and it will give you the history!
@@ -56,6 +57,23 @@ namespace libmsiecf
                     {
                         this.RecoveredItemCount = items;
                     }
+
+                    int cacheDirCount = 0;
+                    rv = NativeMethods.libmsiecf_file_get_number_of_cache_directories(handle, ref cacheDirCount, IntPtr.Zero);
+                    if (rv == 1 && (cacheDirCount>0) && (cacheDirCount < 256))
+                    {
+                        cacheDirectories = new string[cacheDirCount];
+
+                        for (int a = 0; a < cacheDirCount; a++)
+                        {
+                            var buf = new StringBuilder();
+                            rv = NativeMethods.libmsiecf_file_get_cache_directory_name(this.handle, a, buf, 9, IntPtr.Zero);
+                            if (rv == 1)
+                            {
+                                cacheDirectories[a] = buf.ToString();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -65,8 +83,8 @@ namespace libmsiecf
         /// </summary>
         ~IndexDat()
         {
-            if (this.handle!=null && !this.handle.IsClosed)
-            this.handle.Close();
+            if (this.handle != null && !this.handle.IsClosed)
+                this.handle.Close();
         }
 
         /// <summary>
@@ -122,16 +140,48 @@ namespace libmsiecf
                                 rv = NativeMethods.libmsiecf_url_get_location_size(ih, ref locsize, IntPtr.Zero);
                                 if (rv == 1)
                                 {
-                                    IntPtr namebuf = Marshal.AllocHGlobal(locsize);
-                                    rv = NativeMethods.libmsiecf_url_get_location(ih, namebuf, new UIntPtr((uint)locsize), IntPtr.Zero);
+                                    IntPtr nameptr = Marshal.AllocHGlobal(locsize);
+                                    rv = NativeMethods.libmsiecf_url_get_location(ih, nameptr, new UIntPtr((uint)locsize), IntPtr.Zero);
 
                                     if (rv == 1)
                                     {
                                         byte[] data = new byte[locsize];
-                                        Marshal.Copy(namebuf, data, 0, locsize);
+                                        Marshal.Copy(nameptr, data, 0, locsize);
                                         item.Location = Encoding.UTF8.GetString(data, 0, locsize - 1);
                                     }
+                                    Marshal.FreeHGlobal(nameptr);
+
                                 }
+                                #endregion
+
+                                #region cache
+
+                                byte whichCacheDir = byte.MaxValue;
+                                rv = NativeMethods.libmsiecf_url_get_cache_directory_index(ih, ref whichCacheDir, IntPtr.Zero);
+                                if (rv == 1)
+                                {
+                                    var cacheDir = this.cacheDirectories[whichCacheDir];
+
+                                    int filenamesize = 0;
+                                    rv = NativeMethods.libmsiecf_url_get_filename_size(ih, ref filenamesize, IntPtr.Zero);
+                                    if (rv == 1)
+                                    {
+                                        //var nameptr = Marshal.AllocHGlobal((int)filenamesize);
+                                        var namebuf = new byte[filenamesize];
+                                        rv = NativeMethods.libmsiecf_url_get_filename(ih, namebuf, filenamesize, IntPtr.Zero);
+                                        if (rv == 1)
+                                        {
+                                            //Marshal.Copy(nameptr, namebuf, 0, filenamesize);
+                                            var cacheFileName = Encoding.UTF8.GetString(namebuf, 0, filenamesize-1);
+                                            item.CachePath = Path.Combine(cacheDir, cacheFileName);
+                                        }
+                                    }
+
+                                }
+
+                     
+
+
                                 #endregion
 
                                 #region dates
@@ -178,6 +228,17 @@ namespace libmsiecf
         }
 
         /// <summary>
+        /// The cache directories that this index.dat structure makes use of, where the cached web data resides.
+        /// </summary>
+        public IList<string> CacheDirectories
+        {
+            get
+            {
+                return cacheDirectories;
+            }
+        }
+
+        /// <summary>
         /// disposes native handle
         /// </summary>
         public void Dispose()
@@ -197,6 +258,11 @@ namespace libmsiecf
         /// Location
         /// </summary>
         public string Location { get; set; }
+
+        /// <summary>
+        /// Location on disk
+        /// </summary>
+        public string CachePath { get; set; }
 
         /// <summary>
         /// Primary time

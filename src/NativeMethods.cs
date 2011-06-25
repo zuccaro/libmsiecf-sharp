@@ -111,6 +111,47 @@ namespace libmsiecf
         [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
         public static extern int libmsiecf_file_get_number_of_recovered_items(IndexDatHandle fileHandle, ref int numberOfRecoveredItems, IntPtr error);
 
+        //LIBMSIECF_EXTERN int libmsiecf_file_get_number_of_cache_directories(libmsiecf_file_t *file,int *number_of_cache_directories,liberror_error_t **error );
+        /// <summary>
+        /// Retrieves the number of cache directories
+        /// </summary>
+        /// <param name="fileHandle"></param>
+        /// <param name="numberOfCacheDirectories"></param>
+        /// <param name="error"></param>
+        /// <returns>Returns 1 if successful or -1 on error</returns>
+        [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libmsiecf_file_get_number_of_cache_directories(IndexDatHandle fileHandle, ref int numberOfCacheDirectories, IntPtr error);
+
+        
+        //LIBMSIECF_EXTERN int libmsiecf_file_get_cache_directory_name(libmsiecf_file_t *file,int cache_directory_index,uint8_t *cache_directory_name,size_t cache_directory_name_size,liberror_error_t **error );
+        /// <summary>
+        /// Retrieves the UTF-8 encoded name of a certain cache directory.  
+        /// The size should include the end of string character.  
+        /// The cache directory name consists of 8 characters + end of string character
+        /// </summary>
+        /// <param name="fileHandle"></param>
+        /// <param name="cacheDirectoryIndex"></param>
+        /// <param name="ptrToInt8LocationString"></param>
+        /// <param name="location_size"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
+        [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libmsiecf_file_get_cache_directory_name(IndexDatHandle fileHandle, int cacheDirectoryIndex, IntPtr ptrToInt8LocationString, UIntPtr location_size, IntPtr error);
+
+        /// <summary>
+        /// Retrieves the UTF-8 encoded name of a certain cache directory.  
+        /// The size should include the end of string character.  
+        /// The cache directory name consists of 8 characters + end of string character
+        /// </summary>
+        /// <param name="fileHandle"></param>
+        /// <param name="cacheDirectoryIndex"></param>
+        /// <param name="location"></param>
+        /// <param name="locSize"></param>
+        /// <param name="error"></param>
+        /// <returns>Returns 1 if successful or -1 on error</returns>
+        [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libmsiecf_file_get_cache_directory_name(IndexDatHandle fileHandle, int cacheDirectoryIndex, System.Text.StringBuilder location, uint locSize, IntPtr error);
+
         
         /// <summary>
         /// Retrieves the item for the specific index
@@ -180,9 +221,18 @@ namespace libmsiecf
         [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
         public static extern int libmsiecf_url_get_filename_size(IndexDatItemHandle itemHandle, IntPtr ptrToSizeT, IntPtr error);
 
+        [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libmsiecf_url_get_filename_size(IndexDatItemHandle itemHandle, ref int size, IntPtr error);
+
         //LIBMSIECF_EXTERN int libmsiecf_url_get_filename( libmsiecf_item_t *url, uint8_t *filename, size_t filename_size, libmsiecf_error_t **error );
         [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libmsiecf_url_get_filename(IndexDatItemHandle itemHandle, IntPtr ptrToInt8LocationString, UIntPtr location_size, IntPtr error);
+        public static extern int libmsiecf_url_get_filename(IndexDatItemHandle itemHandle, IntPtr ptrToInt8LocationString, int location_size, IntPtr error);
+
+        [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libmsiecf_url_get_filename(IndexDatItemHandle itemHandle, byte[] ptrToInt8LocationString, int location_size, IntPtr error);
+
+        //[DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int libmsiecf_url_get_filename(IndexDatItemHandle itemHandle, System.Text.StringBuilder filenameBuffer, uint location_size, IntPtr error);
 
         //LIBMSIECF_EXTERN int libmsiecf_url_get_data_size( libmsiecf_item_t *url, size_t *data_size, libmsiecf_error_t **error );
         [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
@@ -191,6 +241,10 @@ namespace libmsiecf
         //LIBMSIECF_EXTERN int libmsiecf_url_get_data( libmsiecf_item_t *url, uint8_t *data, size_t data_size, libmsiecf_error_t **error );
         [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
         public static extern int libmsiecf_url_get_data(IndexDatItemHandle itemHandle, IntPtr ptrToInt8LocationString, UIntPtr location_size, IntPtr error);
+
+        //LIBMSIECF_EXTERN int libmsiecf_url_get_data( libmsiecf_item_t *url, uint8_t *data, size_t data_size, libmsiecf_error_t **error );
+        [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libmsiecf_url_get_data(IndexDatItemHandle itemHandle, System.Text.StringBuilder data, uint location_size, IntPtr error);
 
         [DllImport(library, CallingConvention = CallingConvention.Cdecl)]
         public static extern int libmsiecf_item_free(ref IntPtr itemHandle, IntPtr error);

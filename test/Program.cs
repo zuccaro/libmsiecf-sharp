@@ -19,10 +19,21 @@ namespace Test
                     var str = fi.OpenRead();
                     var foo = new libmsiecf.IndexDat(fi);
 
+                    foreach (var cd in foo.CacheDirectories)
+                    {
+                        Console.WriteLine(cd);
+                    }
+
+                    int ctr = 0;
                     foreach (var item in foo.URLItems)
                     {
-                        if (item.Location.IndexOf("") > -1)
-                            Console.WriteLine(item.Location);
+                        Console.Write("{0:0000}: {1} - ", ctr, item.CachePath);
+
+                        //if (item.Location.IndexOf("") > -1)
+                        //    Console.Write(item.Location);
+
+                        Console.WriteLine();
+                        ctr++;
                     }
                     str.Close();
                 }
